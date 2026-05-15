@@ -20,3 +20,29 @@ export async function getExpenseCategories() {
 
   return response.data;
 }
+
+export async function deleteExpense(
+  expenseId
+) {
+
+  const response =
+    await axiosInstance.delete(
+      `/expenses/${expenseId}`
+    );
+
+  return response.data;
+}
+
+export async function updateExpense(
+  expenseId,
+  expenseData
+) {
+
+  const response =
+    await axiosInstance.put(
+      `/expenses/${expenseId}`,
+      expenseData
+    );
+
+  return response.data;
+}

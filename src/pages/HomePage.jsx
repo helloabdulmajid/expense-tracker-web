@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
-import { getMyExpenses } from "../services/expenseService";
+import { getMyExpenses, deleteExpense } from "../services/expenseService";
 import Navbar from "../components/layout/Navbar";
 import { formatCurrency } from "../utils/currency";
 import SummaryCard from "../components/SummaryCard";
 import AddExpenseModal
 from "../components/AddExpenseModal";
+import { formatDate }
+from "../utils/date";
+
+
 
 function HomePage() {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] =
-  useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedExpense, setSelectedExpense] =useState(null);
 
   async function fetchExpenses() {
       try {
@@ -166,93 +170,246 @@ function HomePage() {
           </div>
 
           {
-  expenses.content?.length > 0 ? (
+ expenses.content?.length > 0 ? (
 
-    expenses.content.map((expense) => (
+  expenses.content.map((expense) => (
 
-      <div
-        key={expense.id}
-        className="
-          flex
-          flex-col
-          gap-4
-          md:flex-row
-          md:items-center
-          md:justify-between
-          p-4
-          rounded-xl
-          border
-          border-gray-100
-          hover:bg-gray-50
-          transition
-        "
-      >
+    <div
+      key={expense.id}
+      className="
+        bg-white
+        border
+        border-gray-100
+        rounded-2xl
+        p-5
+        flex
+        flex-col
+        gap-4
+        md:flex-row
+        md:items-center
+        md:justify-between
+        hover:shadow-md
+        transition
+      "
+    >
 
-        <div>
+      <div className="space-y-3">
 
-          <h3 className="font-semibold text-gray-800">
+        <div
+          className="
+            flex
+            items-center
+            gap-2
+            flex-wrap
+          "
+        >
 
-            {expense.note}
+          <h3
+            className="
+              font-semibold
+              text-lg
+              text-gray-800
+            "
+          >
+
+            {expense.note || "Expense"}
 
           </h3>
 
-          <p className="text-sm text-gray-500 mt-1">
+          <span
+            className="
+              text-xs
+              bg-purple-100
+              text-purple-700
+              px-3
+              py-1
+              rounded-full
+              font-medium
+            "
+          >
 
             {expense.categoryName}
 
-          </p>
+          </span>
 
         </div>
 
-        <div className="md:text-right">
+        <div
+          className="
+            flex
+            items-center
+            gap-3
+            flex-wrap
+            text-sm
+            text-gray-500
+          "
+        >
 
-          <p className="font-bold text-lg">
-
-           {formatCurrency(expense.amount)}
-
+          <p>
+            {formatDate(expense.date)}
           </p>
 
-          <p className="text-sm text-gray-500 mt-1">
+          <span>
+            •
+          </span>
 
+          <p>
             {expense.paymentMode}
-
           </p>
 
         </div>
 
       </div>
-    ))
 
-  ) : (
+<div
+  className="
+    md:text-right
+    flex
+    flex-col
+    items-start
+    md:items-end
+    gap-2
+  "
+>
 
-    <div
-      className="
-        text-center
-        py-10
-      "
-    >
+  <p className="font-bold text-lg">
 
-      <p className="text-gray-500">
+    {formatCurrency(expense.amount)}
 
-        No expenses added yet
+  </p>
 
-      </p>
+ <div
+  className="
+    flex
+    items-center
+    justify-between
+    w-full
+    md:w-auto
+    md:justify-end
+    gap-4
+  "
+>
+
+  <button className="
+  text-sm
+  font-medium
+  text-blue-600
+  hover:bg-blue-50
+  px-4
+  py-2
+  rounded-lg
+  transition
+">
+    Edit
+  </button>
+
+  <button className="
+  text-sm
+  font-medium
+  text-red-600
+  hover:bg-red-50
+  px-4
+  py-2
+  rounded-lg
+  transition
+">
+    Delete
+  </button>
+
+</div>
+
+</div>
 
     </div>
-  )
+  ))
+
+) : (
+
+  <div
+    className="
+      text-center
+      py-10
+    "
+  >
+
+   <div
+  className="
+    flex
+    flex-col
+    items-center
+    justify-center
+    py-14
+    text-center
+  "
+>
+
+  <div
+    className="
+      w-20
+      h-20
+      rounded-full
+      bg-purple-100
+      flex
+      items-center
+      justify-center
+      text-3xl
+      mb-4
+    "
+  >
+
+    💸
+
+  </div>
+
+  <h3
+    className="
+      text-lg
+      font-semibold
+      text-gray-800
+    "
+  >
+
+    No expenses yet
+
+  </h3>
+
+  <p
+    className="
+      text-gray-500
+      mt-2
+      max-w-sm
+    "
+  >
+
+    Start tracking your spending
+    by adding your first expense.
+
+  </p>
+
+</div>
+
+  </div>
+)
 }
         </div>
       </div>
     </div>
-    <AddExpenseModal
+  <AddExpenseModal
   isOpen={isModalOpen}
 
-  onClose={() =>
-    setIsModalOpen(false)
-  }
+  onClose={() => {
+
+    setIsModalOpen(false);
+
+    setSelectedExpense(null);
+  }}
 
   onExpenseCreated={
     fetchExpenses
+  }
+
+  selectedExpense={
+    selectedExpense
   }
 />
     </>

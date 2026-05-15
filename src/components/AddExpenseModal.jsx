@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 import {
   createExpense,
-  getExpenseCategories,
+  getExpenseCategories,updateExpense
 } from "../services/expenseService";
 
 function AddExpenseModal({
 
   isOpen,
+
   onClose,
+
   onExpenseCreated,
 
+  selectedExpense
 }) {
 
   const [amount, setAmount] = useState("");
@@ -27,6 +31,45 @@ const [category, setCategory]
   const [categories, setCategories] =
   useState([]);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+
+  if (selectedExpense) {
+
+    setAmount(
+      selectedExpense.amount
+    );
+
+    setNote(
+      selectedExpense.note
+    );
+
+    setPaymentMode(
+      selectedExpense.paymentMode
+    );
+
+    setCategory(
+      selectedExpense.categoryId
+    );
+
+    setDate(
+      selectedExpense.date
+    );
+
+  } else {
+
+    setAmount("");
+
+    setNote("");
+
+    setPaymentMode("UPI");
+
+    setCategory("");
+
+    setDate("");
+  }
+
+}, [selectedExpense]);
 
   useEffect(() => {
 
@@ -108,9 +151,29 @@ async function handleSubmit(event) {
       categoryId: category,
     };
 
-    await createExpense(
-      expenseData
-    );
+if (selectedExpense) {
+
+  await updateExpense(
+
+    selectedExpense.id,
+
+    expenseData
+  );
+
+  toast.success(
+    "Expense updated"
+  );
+
+} else {
+
+  await createExpense(
+    expenseData
+  );
+
+  toast.success(
+    "Expense added"
+  );
+}
 
     setAmount("");
 
@@ -198,7 +261,9 @@ async function handleSubmit(event) {
             "
           >
 
-            Add Expense
+          {selectedExpense
+  ? "Edit Expense"
+  : "Add Expense"}
 
           </h2>
 
@@ -385,7 +450,9 @@ async function handleSubmit(event) {
             "
           >
 
-            Save Expense
+            {selectedExpense
+  ? "Update Expense"
+  : "Save Expense"}
 
           </button>
 
