@@ -1,9 +1,19 @@
 import axiosInstance from "../api/axios";
 
-export async function getMyExpenses( page = 0,
+export async function getMyExpenses(
+  page = 0,
+
   keyword = "",
-  paymentMode = "") {
-  const response = await axiosInstance.get(`/expenses/me?page=${page}&keyword=${keyword}&paymentMode=${paymentMode}`);
+
+  paymentMode = "",
+
+  sortBy = "createdAt",
+
+  sortDir = "desc",
+) {
+  const response = await axiosInstance.get(
+    `/expenses/me?page=${page}&keyword=${keyword}&paymentMode=${paymentMode}&sortBy=${sortBy}&sortDir=${sortDir}`,
+  );
   return response.data;
 }
 export async function getDashboardSummary() {

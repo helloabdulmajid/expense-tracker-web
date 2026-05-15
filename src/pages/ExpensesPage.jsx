@@ -13,15 +13,23 @@ function ExpensesPage() {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [keyword, setKeyword] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-
   const [paymentMode, setPaymentMode] = useState("");
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [sortOption, setSortOption] = useState("latest");
 
+  const [sortDir, setSortDir] = useState("desc");
 
   async function fetchExpenses() {
     try {
       setLoading(true);
 
-      const data = await getMyExpenses(page, keyword, paymentMode);
+      const data = await getMyExpenses(
+        page,
+        keyword,
+        paymentMode,
+        sortBy,
+        sortDir,
+      );
 
       setExpenses(data);
 
@@ -35,7 +43,7 @@ function ExpensesPage() {
 
   useEffect(() => {
     fetchExpenses();
-  }, [page, keyword, paymentMode]);
+  }, [page, keyword, paymentMode, sortBy, sortDir]);
   useEffect(() => {
     const timeout = setTimeout(() => {
       setKeyword(searchTerm);
@@ -137,36 +145,100 @@ function ExpensesPage() {
     "
             />
 
-            <select
-              value={paymentMode}
-              onChange={(event) => {
-                setPage(0);
-
-                setPaymentMode(event.target.value);
-              }}
+            <div
               className="
-      w-full
-      md:w-52
-      border
-      border-gray-200
-      rounded-xl
-      px-4
-      py-3
-      outline-none
-      focus:ring-2
-      focus:ring-purple-500
-      bg-white
-    "
+      flex
+    flex-col
+    gap-3
+    w-full
+    overflow-hidden
+    md:w-auto
+    md:flex-row
+  "
             >
-              <option value="">All Payments</option>
+              <select
+                value={paymentMode}
+                onChange={(event) => {
+                  setPaymentMode(event.target.value);
 
-              <option value="UPI">UPI</option>
+                  setPage(0);
+                }}
+                className="
+  w-full
+  max-w-full
+  md:w-52
+  border
+  border-gray-200
+  rounded-xl
+  px-4
+  py-3
+  outline-none
+  focus:ring-2
+  focus:ring-purple-500
+  bg-white
+"
+              >
+                <option value="">All Payments</option>
 
-              <option value="CARD">CARD</option>
+                <option value="CASH">CASH</option>
 
-              <option value="CASH">CASH</option>
-            </select>
+                <option value="UPI">UPI</option>
+
+                <option value="CARD">CARD</option>
+              </select>
+              <select
+                value={sortOption}
+                onChange={(event) => {
+                  const value = event.target.value;
+
+                  setSortOption(value);
+
+                  if (value === "latest") {
+                    setSortBy("createdAt");
+
+                    setSortDir("desc");
+                  } else if (value === "oldest") {
+                    setSortBy("createdAt");
+
+                    setSortDir("asc");
+                  } else if (value === "high") {
+                    setSortBy("amount");
+
+                    setSortDir("desc");
+                  } else if (value === "low") {
+                    setSortBy("amount");
+
+                    setSortDir("asc");
+                  }
+
+                  setPage(0);
+                }}
+                className="
+  w-full
+  max-w-full
+  md:w-52
+  border
+  border-gray-200
+  rounded-xl
+  px-4
+  py-3
+  outline-none
+  focus:ring-2
+  focus:ring-purple-500
+  bg-white
+"
+              >
+                <option value="latest">Latest First</option>
+
+                <option value="oldest">Oldest First</option>
+
+                <option value="high">Amount High → Low</option>
+
+                <option value="low">Amount Low → High</option>
+              </select>
+            </div>
           </div>
+
           <div
             className="
     bg-white
