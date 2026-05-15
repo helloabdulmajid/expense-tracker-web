@@ -1,16 +1,264 @@
-# React + Vite
+# Moniq - Expense Tracker Web App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Moniq is a modern full-stack Expense Tracker application built with Spring Boot and React.  
+The project focuses on clean backend architecture, scalable REST APIs, responsive UI design, and real-world expense management features.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+# Tech Stack
 
-## React Compiler
+## Backend
+- Java
+- Spring Boot
+- Spring Security
+- JWT Authentication
+- Spring Data JPA
+- Hibernate
+- MySQL
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Frontend
+- React
+- React Router
+- Axios
+- Tailwind CSS
+- Vite
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Current Features
+
+## Authentication
+- User Registration
+- User Login
+- JWT-based Authentication
+- Protected Routes
+- Persistent Login
+
+---
+
+# Expense Management
+
+## Expense Features
+- Create Expense
+- Update Expense
+- Delete Expense
+- Get User Expenses
+- Paginated Expense List
+- Recent Transactions
+- Dashboard Summary
+
+---
+
+# Dashboard
+
+## Dashboard Summary Cards
+- Total Expenses
+- Total Income
+- Current Balance
+
+## Recent Transactions
+- Latest 5 expenses
+- Sorted by latest created transaction
+- Quick Edit/Delete actions
+- Responsive transaction cards
+
+---
+
+# Search & Filters
+
+## Search
+- Search expenses by keyword/note
+- Debounced search input for smoother UX
+
+## Filters
+- Filter by Payment Mode
+  - CASH
+  - CARD
+  - UPI
+
+## Sorting
+- Latest First
+- Oldest First
+- Amount High → Low
+- Amount Low → High
+
+---
+
+# Pagination
+- Previous / Next page navigation
+- Backend pagination support using Spring Pageable
+
+---
+
+# UI / UX Improvements
+
+## Responsive Design
+- Mobile Responsive Layout
+- Desktop Optimized UI
+- Responsive Expense Cards
+- Adaptive Dashboard Layout
+
+## Expense Card UI
+- Category Badges
+- Better Mobile Alignment
+- Large Amount Display
+- Reusable Components
+- Clean Modern Design
+
+---
+
+# Backend Architecture
+
+## Layered Architecture
+- Controller Layer
+- Service Layer
+- Repository Layer
+- DTO-based API Responses
+
+## Security
+- JWT Token Authentication
+- User-specific expense access
+- Protected API routes
+
+---
+
+# APIs Implemented
+
+## Auth APIs
+- Register
+- Login
+- Current User
+
+## Expense APIs
+- Create Expense
+- Update Expense
+- Delete Expense
+- Get Expenses with:
+  - Pagination
+  - Search
+  - Filters
+  - Sorting
+
+## Dashboard APIs
+- Dashboard Summary API
+
+---
+
+# Project Structure
+
+## Frontend Structure
+```bash
+src/
+ ├── components/
+ ├── pages/
+ ├── layouts/
+ ├── services/
+ ├── hooks/
+ ├── routes/
+ ├── utils/
+ └── context/
+```
+
+## Backend Structure
+```bash
+src/main/java/
+ ├── controller/
+ ├── service/
+ ├── repository/
+ ├── model/
+ ├── dto/
+ ├── security/
+ └── config/
+```
+
+---
+
+# Current Status
+
+## Completed
+- Authentication System
+- Expense CRUD
+- Dashboard Summary
+- Recent Transactions
+- Pagination
+- Search & Filters
+- Sorting
+- Responsive UI
+- Reusable Modal for Add/Edit
+- Mobile Optimization
+
+---
+
+# Future Improvements
+
+## Planned Features
+
+### Income Module
+- Add Income
+- Income Categories
+- Income Dashboard
+
+### Analytics
+- Expense Charts
+- Monthly Reports
+- Category Analytics
+- Spending Trends
+
+### Advanced Filters
+- Date Range Filter
+- Category Filter
+- Amount Range Filter
+
+### UX Improvements
+- Toast Notifications
+- Skeleton Loaders
+- Empty State UI
+- Confirmation Dialogs
+- Dark Mode
+
+### Productivity Features
+- Export Expenses
+- Download PDF Reports
+- CSV Export
+- Budget Planning
+- Savings Goals
+
+### Advanced Features
+- Recurring Expenses
+- Multi-user Support
+- Cloud Deployment
+- PWA Support
+- Notifications
+
+---
+
+# Learning Goals Behind This Project
+
+This project is being built to improve:
+- Full Stack Development Skills
+- Spring Boot Backend Architecture
+- REST API Design
+- Authentication & Security
+- React State Management
+- Responsive UI Design
+- Clean Code Practices
+- Real-world Project Development
+
+---
+
+# Author
+
+Developed by Abdul Majid
+
+---
+
+# Project Vision
+
+Moniq is planned as a modern personal finance management platform focused on:
+- simplicity
+- clean design
+- scalable architecture
+- real-world usability
+- production-ready backend/frontend practices
+
+The goal is to continuously evolve the project into a professional-grade finance management application.
