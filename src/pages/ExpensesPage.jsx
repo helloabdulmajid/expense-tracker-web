@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import AddExpenseModal
-from "../components/AddExpenseModal";
+import AddExpenseModal from "../components/AddExpenseModal";
 import Navbar from "../components/layout/Navbar";
 import { getMyExpenses, deleteExpense } from "../services/expenseService";
 
@@ -10,16 +9,19 @@ function ExpensesPage() {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
-  const [isModalOpen, setIsModalOpen] =
-  useState(false);
-const [selectedExpense, setSelectedExpense] =
-  useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedExpense, setSelectedExpense] = useState(null);
+  const [keyword, setKeyword] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [paymentMode, setPaymentMode] = useState("");
+
 
   async function fetchExpenses() {
     try {
       setLoading(true);
 
-      const data = await getMyExpenses(page);
+      const data = await getMyExpenses(page, keyword, paymentMode);
 
       setExpenses(data);
 
@@ -33,7 +35,14 @@ const [selectedExpense, setSelectedExpense] =
 
   useEffect(() => {
     fetchExpenses();
-  }, [page]);
+  }, [page, keyword, paymentMode]);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setKeyword(searchTerm);
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [searchTerm]);
 
   if (loading) {
     return (
@@ -96,12 +105,76 @@ const [selectedExpense, setSelectedExpense] =
 
           <div
             className="
-              bg-white
-              rounded-2xl
-              p-6
-              shadow-sm
-              space-y-4
-            "
+    flex
+    flex-col
+    gap-4
+    md:flex-row
+    md:items-center
+    md:justify-between
+    mb-6
+  "
+          >
+            <input
+              type="text"
+              placeholder="Search expenses..."
+              value={searchTerm}
+              onChange={(event) => {
+                setPage(0);
+
+                setSearchTerm(event.target.value);
+              }}
+              className="
+      w-full
+      md:max-w-md
+      border
+      border-gray-200
+      rounded-xl
+      px-4
+      py-3
+      outline-none
+      focus:ring-2
+      focus:ring-purple-500
+    "
+            />
+
+            <select
+              value={paymentMode}
+              onChange={(event) => {
+                setPage(0);
+
+                setPaymentMode(event.target.value);
+              }}
+              className="
+      w-full
+      md:w-52
+      border
+      border-gray-200
+      rounded-xl
+      px-4
+      py-3
+      outline-none
+      focus:ring-2
+      focus:ring-purple-500
+      bg-white
+    "
+            >
+              <option value="">All Payments</option>
+
+              <option value="UPI">UPI</option>
+
+              <option value="CARD">CARD</option>
+
+              <option value="CASH">CASH</option>
+            </select>
+          </div>
+          <div
+            className="
+    bg-white
+    rounded-3xl
+    shadow-sm
+    p-6
+    space-y-4
+  "
           >
             {expenses.content?.map((expense) => (
               <div
@@ -120,8 +193,8 @@ const [selectedExpense, setSelectedExpense] =
                   "
               >
                 <div>
-               <div
-  className="
+                  <div
+                    className="
     flex
     flex-col
     items-start
@@ -129,15 +202,15 @@ const [selectedExpense, setSelectedExpense] =
     md:flex-row
     md:items-center
   "
->
-                   <h2
-  className="
+                  >
+                    <h2
+                      className="
     text-2xl
     font-semibold
     text-gray-800
     break-words
   "
->
+                    >
                       {expense.note}
                     </h2>
 
@@ -204,18 +277,13 @@ const [selectedExpense, setSelectedExpense] =
       gap-4
     "
                   >
-                  <button
+                    <button
+                      onClick={() => {
+                        setSelectedExpense(expense);
 
-  onClick={() => {
-
-    setSelectedExpense(
-      expense
-    );
-
-    setIsModalOpen(true);
-  }}
-
-  className="
+                        setIsModalOpen(true);
+                      }}
+                      className="
     text-blue-500
     hover:text-blue-700
     hover:bg-blue-50
@@ -224,11 +292,9 @@ const [selectedExpense, setSelectedExpense] =
     rounded-lg
     transition
   "
->
-
-  Edit
-
-</button>
+                    >
+                      Edit
+                    </button>
 
                     <button
                       onClick={async () => {
@@ -264,7 +330,6 @@ const [selectedExpense, setSelectedExpense] =
               </div>
             ))}
           </div>
-
           <div
             className="
               flex
@@ -308,26 +373,16 @@ const [selectedExpense, setSelectedExpense] =
       </div>
 
       <AddExpenseModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
 
-  isOpen={isModalOpen}
-
-  onClose={() => {
-
-    setIsModalOpen(false);
-
-    setSelectedExpense(null);
-  }}
-
-  onExpenseCreated={
-    fetchExpenses
-  }
-
-  selectedExpense={
-  selectedExpense
-}
-/>
+          setSelectedExpense(null);
+        }}
+        onExpenseCreated={fetchExpenses}
+        selectedExpense={selectedExpense}
+      />
     </>
-    
   );
 }
 
