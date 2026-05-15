@@ -5,11 +5,14 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
+import ExpensesPage
+from "./pages/ExpensesPage";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
 
         <Route path="/login" element={<PublicRoute> <LoginPage /></PublicRoute>} />

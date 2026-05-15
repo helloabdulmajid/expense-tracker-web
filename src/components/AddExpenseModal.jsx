@@ -3,223 +3,158 @@ import toast from "react-hot-toast";
 
 import {
   createExpense,
-  getExpenseCategories,updateExpense
+  getExpenseCategories,
+  updateExpense,
 } from "../services/expenseService";
 
 function AddExpenseModal({
-
   isOpen,
 
   onClose,
 
   onExpenseCreated,
 
-  selectedExpense
+  selectedExpense,
 }) {
-
   const [amount, setAmount] = useState("");
 
   const [note, setNote] = useState("");
 
-  const [paymentMode, setPaymentMode] =
-    useState("UPI");
+  const [paymentMode, setPaymentMode] = useState("UPI");
 
-const [category, setCategory]
-  = useState("");
+  const [category, setCategory] = useState("");
 
   const [date, setDate] = useState("");
-  const [categories, setCategories] =
-  useState([]);
+  const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (selectedExpense) {
+      setAmount(selectedExpense.amount);
 
-  if (selectedExpense) {
+      setNote(selectedExpense.note);
 
-    setAmount(
-      selectedExpense.amount
-    );
+      setPaymentMode(selectedExpense.paymentMode);
 
-    setNote(
-      selectedExpense.note
-    );
+      setCategory(selectedExpense.categoryId);
 
-    setPaymentMode(
-      selectedExpense.paymentMode
-    );
+      setDate(selectedExpense.date);
+    } else {
+      setAmount("");
 
-    setCategory(
-      selectedExpense.categoryId
-    );
+      setNote("");
 
-    setDate(
-      selectedExpense.date
-    );
+      setPaymentMode("UPI");
 
-  } else {
+      setCategory("");
 
-    setAmount("");
-
-    setNote("");
-
-    setPaymentMode("UPI");
-
-    setCategory("");
-
-    setDate("");
-  }
-
-}, [selectedExpense]);
+      setDate("");
+    }
+  }, [selectedExpense]);
 
   useEffect(() => {
+    fetchCategories();
+  }, []);
 
-  fetchCategories();
+  async function fetchCategories() {
+    try {
+      const response = await getExpenseCategories();
 
-}, []);
+      setCategories(response);
 
-async function fetchCategories() {
-
-  try {
-
-    const response =
-      await getExpenseCategories();
-
-    setCategories(response);
-
-    if (response.length > 0) {
-
-      setCategory(response[0].id);
-    }
-
-  } catch (error) {
-
-   if (
-  error.response &&
-  error.response.data &&
-  error.response.data.message
-) {
-
-  setError(
-    error.response.data.message
-  );
-
-} else {
-
-  setError(
-    "Something went wrong"
-  );
-}
-  }
-}
-
-async function handleSubmit(event) {
-
-  event.preventDefault();
-
-  if (!amount || amount <= 0) {
-
-    setError(
-      "Please enter valid amount"
-    );
-
-    return;
-  }
-
-  if (!date) {
-
-    setError(
-      "Please select expense date"
-    );
-
-    return;
-  }
-
-  setError("");
-
-  try {
-
-    const expenseData = {
-
-      amount,
-
-      paymentMode,
-
-      note,
-
-      date,
-
-      categoryId: category,
-    };
-
-if (selectedExpense) {
-
-  await updateExpense(
-
-    selectedExpense.id,
-
-    expenseData
-  );
-
-  toast.success(
-    "Expense updated"
-  );
-
-} else {
-
-  await createExpense(
-    expenseData
-  );
-
-  toast.success(
-    "Expense added"
-  );
-}
-
-    setAmount("");
-
-    setNote("");
-
-    setPaymentMode("UPI");
-
-    setDate("");
-
-    if (categories.length > 0) {
-
-      setCategory(categories[0].id);
-    }
-
-    onExpenseCreated();
-
-    onClose();
-
-  } catch (error) {
-
-    if (
-      error.response &&
-      error.response.data &&
-      error.response.data.message
-    ) {
-
-      setError(
+      if (response.length > 0) {
+        setCategory(response[0].id);
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
         error.response.data.message
-      );
-
-    } else {
-
-      setError(
-        "Something went wrong"
-      );
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("Something went wrong");
+      }
     }
   }
-}
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    if (!amount || amount <= 0) {
+      setError("Please enter valid amount");
+
+      return;
+    }
+
+    if (!date) {
+      setError("Please select expense date");
+
+      return;
+    }
+
+    setError("");
+
+    try {
+      const expenseData = {
+        amount,
+
+        paymentMode,
+
+        note,
+
+        date,
+
+        categoryId: category,
+      };
+
+      if (selectedExpense) {
+        await updateExpense(
+          selectedExpense.id,
+
+          expenseData,
+        );
+
+        toast.success("Expense updated");
+      } else {
+        await createExpense(expenseData);
+
+        toast.success("Expense added");
+      }
+
+      setAmount("");
+
+      setNote("");
+
+      setPaymentMode("UPI");
+
+      setDate("");
+
+      if (categories.length > 0) {
+        setCategory(categories[0].id);
+      }
+
+      await onExpenseCreated();
+
+      onClose();
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("Something went wrong");
+      }
+    }
+  }
 
   if (!isOpen) {
-
     return null;
   }
 
   return (
-
     <div
       className="
         fixed
@@ -232,7 +167,6 @@ if (selectedExpense) {
         px-4
       "
     >
-
       <div
         className="
           bg-white
@@ -243,7 +177,6 @@ if (selectedExpense) {
           shadow-xl
         "
       >
-
         <div
           className="
             flex
@@ -252,7 +185,6 @@ if (selectedExpense) {
             mb-6
           "
         >
-
           <h2
             className="
               text-2xl
@@ -260,41 +192,25 @@ if (selectedExpense) {
               text-gray-800
             "
           >
-
-          {selectedExpense
-  ? "Edit Expense"
-  : "Add Expense"}
-
+            {selectedExpense ? "Edit Expense" : "Add Expense"}
           </h2>
 
           <button
-
             onClick={onClose}
-
             className="
               text-gray-500
               hover:text-red-500
               text-xl
             "
           >
-
             ✕
-
           </button>
-
         </div>
 
-        <form
-
-          onSubmit={handleSubmit}
-
-          className="space-y-4"
-        >
-            {
-  error && (
-
-    <div
-      className="
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div
+              className="
         bg-red-50
         border
         border-red-200
@@ -304,21 +220,16 @@ if (selectedExpense) {
         px-4
         py-3
       "
-    >
-
-      {error}
-
-    </div>
-  )
-}
+            >
+              {error}
+            </div>
+          )}
 
           <input
             type="number"
             placeholder="Enter amount"
             value={amount}
-            onChange={(event) =>
-              setAmount(event.target.value)
-            }
+            onChange={(event) => setAmount(event.target.value)}
             className="
               w-full
               border
@@ -336,9 +247,7 @@ if (selectedExpense) {
             type="text"
             placeholder="Expense note"
             value={note}
-            onChange={(event) =>
-              setNote(event.target.value)
-            }
+            onChange={(event) => setNote(event.target.value)}
             className="
               w-full
               border
@@ -354,9 +263,7 @@ if (selectedExpense) {
 
           <select
             value={paymentMode}
-            onChange={(event) =>
-              setPaymentMode(event.target.value)
-            }
+            onChange={(event) => setPaymentMode(event.target.value)}
             className="
               w-full
               border
@@ -369,27 +276,17 @@ if (selectedExpense) {
               focus:ring-purple-500
             "
           >
+            <option value="UPI">UPI</option>
 
-            <option value="UPI">
-              UPI
-            </option>
+            <option value="CARD">CARD</option>
 
-            <option value="CARD">
-              CARD
-            </option>
-
-            <option value="CASH">
-              CASH
-            </option>
-
+            <option value="CASH">CASH</option>
           </select>
 
-         <select
-  value={category}
-  onChange={(event) =>
-    setCategory(event.target.value)
-  }
-  className="
+          <select
+            value={category}
+            onChange={(event) => setCategory(event.target.value)}
+            className="
     w-full
     border
     border-gray-200
@@ -400,29 +297,18 @@ if (selectedExpense) {
     focus:ring-2
     focus:ring-purple-500
   "
->
-
-  {categories.map((item) => (
-
-    <option
-      key={item.id}
-      value={item.id}
-    >
-
-      {item.categoryName}
-
-    </option>
-
-  ))}
-
-</select>
+          >
+            {categories.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.categoryName}
+              </option>
+            ))}
+          </select>
 
           <input
             type="date"
             value={date}
-            onChange={(event) =>
-              setDate(event.target.value)
-            }
+            onChange={(event) => setDate(event.target.value)}
             className="
               w-full
               border
@@ -449,17 +335,10 @@ if (selectedExpense) {
               rounded-xl
             "
           >
-
-            {selectedExpense
-  ? "Update Expense"
-  : "Save Expense"}
-
+            {selectedExpense ? "Update Expense" : "Save Expense"}
           </button>
-
         </form>
-
       </div>
-
     </div>
   );
 }
